@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://www.gstatic.com/charts/loader.js"></script>
+  <style>
+    /* Chart Wrapper */
+    .chart-wrapper {
+      display: flex;
+      flex-direction: column;
+      width: 480px;
+      padding: 10px;
+      background-color: #fff; /* Extracted from .card */
+      border: 1px solid rgba(26, 54, 126, 0.125);
+      border-radius: 0.25rem;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+      font-family: 'Aptos Bold', Arial, sans-serif;
+    }
+
+    /* Chart Title */
+    .chart-title {
+      font-size: 14px;
+      text-align: center;
+      background: ;
+      padding: 10px;
+      border-top-left-radius: 0.25rem;
+      border-top-right-radius: 0.25rem;
+      font-weight: bold;
+    }
+
+    /* Chart Content */
+    .chart-content {
+      padding: 5px;
+      display: flex;
+      justify-content: center;
+    }
+
+    /* Chart Styling */
+    #chart_div {
+      width: 460px;
+      height: 200px;
+    }
+  </style>
+</head>
+  
+<div class="chart-wrapper">
+  <div class="chart-title">JOB ACCEPTANCE – NO. OF JOBS BY ROUND</div>
+  <div class="chart-content">
+    <div id="chart_div"></div>
+  </div>
+</div>
+
+<script>
+  google.charts.load('current', { packages: ['corechart'] });
+  google.charts.setOnLoadCallback(drawChart);
+
+  function drawChart() {
+    var data = google.visualization.arrayToDataTable([
+      ['Job Rounds', 'Count'],
+      ['Round 1', 60],
+      ['Round 2', 33],
+      ['Round 3', 17],
+      ['> 3 Rounds', 12]
+    ]);
+
+    var options = {
+      width: 460,
+      height: 200,
+      pieHole: 0.3,
+      chartArea: { top: 0, width: '90%', height: '90%' },
+      colors: ['#4CAF50', '#FFC107', '#2196F3', '#F44336'],
+      legend: { position: 'bottom', textStyle: { fontSize: 12 } },
+      pieSliceText: 'value',
+      tooltip: { text: 'value' },
+      animation: {
+        startup: true,
+        duration: 1000,
+        easing: 'out'
+      }
+    };
+
+    var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+    chart.draw(data, options);
+  }
+</script>
+
+</html>
