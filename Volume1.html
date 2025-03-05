@@ -1,152 +1,162 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-    }
-    .table-container {
-      width: 100%;
-      background: #fff;
-      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
-      border-radius: 8px;
-      overflow: hidden;
-    }
-    .table-header {
-      display: flex;
-      background: #d8f5fb;
-      color: white;
-      padding: 0px;
-      font-size: 14px;
-      font-weight: 600;
-    }
-    .row {
-      display: flex;
-      align-items: center;
-      background: #ffffff;
-      border-bottom: 1px solid #f2f2f2;
-      padding: 0px 0;
-    }
-    .row:hover {
-      background: #ececff;
-    }
-    .cell {
-      flex: 1;
-      padding: 5px 5px;
-      font-size: 12px;
-      color: #666;
-      text-align: left;
-    }
-    .expand-icon {
-      cursor: pointer;
-      font-weight: bold;
-      margin-right: 10px;
-      font-size: 18px;
-      color: #333;
-    }
-    .hidden {
-      display: none;
-    }
-    .toggle-container {
-      margin-bottom: 10px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Select Dropdown with Search</title>
+    <style>
+        /* Style for the dropdown container */
+        .dropdown-container {
+            position: relative;
+            width: 250px;
+        }
+
+        /* Style for the input box */
+        .dropdown-input {
+            width: 100%;
+            padding: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        /* Style for the dropdown options container */
+        .dropdown-options {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: white;
+            display: none;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        /* Style for individual options */
+        .dropdown-option {
+            padding: 8px;
+            cursor: pointer;
+        }
+
+        /* Hover effect for options */
+        .dropdown-option:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Style for checkboxes */
+        .dropdown-option input[type="checkbox"] {
+            margin-right: 10px;
+        }
+
+        .dropdown-selected {
+            padding: 8px;
+            background-color: #f1f1f1;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .selected-item {
+            background-color: #007bff;
+            color: white;
+            padding: 5px;
+            border-radius: 4px;
+            margin: 2px;
+            font-size: 14px;
+        }
+
+        .clear-selection {
+            cursor: pointer;
+            font-size: 12px;
+            color: #007bff;
+            margin-top: 5px;
+        }
+    </style>
 </head>
 <body>
-  <div class="toggle-container">
-    <label>
-      <input type="radio" name="view-toggle" value="milestone" checked> Milestone
-    </label>
-    <label>
-      <input type="radio" name="view-toggle" value="Market"> Market
-    </label>
-  </div>
 
-  <div class="table-container">
-    <div class="table-header">
-      <div class="cell first-col">Milestone</div>
-      <div class="cell second-col">Market</div>
-      <div class="cell">Planned</div>
-      <div class="cell">Received</div>
-      <div class="cell">In Hand</div>
-      <div class="cell">Del to CDC</div>
-      <div class="cell">Del to Client</div>
-      <div class="cell">Invoiced</div>
+<div class="dropdown-container">
+    <div class="dropdown-selected" id="selectedItems">
+        <span>Select items</span>
     </div>
-    <div class="table-body">
-      <!-- Rows will be inserted dynamically based on view -->
+    <input type="text" id="dropdownInput" class="dropdown-input" placeholder="Search..." onkeyup="filterOptions()" onclick="toggleDropdown()">
+    <div class="dropdown-options" id="dropdownOptions">
+        <div class="dropdown-option">
+            <input type="checkbox" id="selectAll" onclick="toggleSelectAll()"> <label for="selectAll">Select All</label>
+        </div>
+        <div class="dropdown-option">
+            <input type="checkbox" id="item1" value="Item 1" onclick="updateSelectedItems()"> <label for="item1">Item 1</label>
+        </div>
+        <div class="dropdown-option">
+            <input type="checkbox" id="item2" value="Item 2" onclick="updateSelectedItems()"> <label for="item2">Item 2</label>
+        </div>
+        <div class="dropdown-option">
+            <input type="checkbox" id="item3" value="Item 3" onclick="updateSelectedItems()"> <label for="item3">Item 3</label>
+        </div>
+        <div class="dropdown-option">
+            <input type="checkbox" id="item4" value="Item 4" onclick="updateSelectedItems()"> <label for="item4">Item 4</label>
+        </div>
     </div>
-  </div>
+    <span class="clear-selection" onclick="clearSelection()">Clear Selection</span>
+</div>
 
-  <script>
-    const data = [
-      { milestone: "F2-Aramis", Market: "TN", planned: 75000, received: 50000, inHand: 120000, delCDC: 40000, delClient: 30000, invoiced: 60000 },
-      { milestone: "F2-Aramis", Market: "KY", planned: 35000, received: 55000, inHand: 100000, delCDC: 20000, delClient: 25000, invoiced: 50000 },
-      { milestone: "F2-Aramis", Market: "GA", planned: 80000, received: 55000, inHand: 150000, delCDC: 50000, delClient: 35000, invoiced: 70000 },
-      { milestone: "F2-IQGEO", Market: "TN", planned: 82000, received: 62000, inHand: 130000, delCDC: 45000, delClient: 32000, invoiced: 65000 },
-      { milestone: "F2-IQGEO", Market: "KY", planned: 43000, received: 48000, inHand: 105000, delCDC: 22000, delClient: 27000, invoiced: 52000 },
-      { milestone: "F2-IQGEO", Market: "GA", planned: 85000, received: 65000, inHand: 155000, delCDC: 55000, delClient: 37000, invoiced: 75000 }
-    ];
-
-    function renderTable(groupBy) {
-      let groupedData = {};
-      data.forEach(entry => {
-        let key = entry[groupBy];
-        if (!groupedData[key]) {
-          groupedData[key] = { total: { planned: 0, received: 0, inHand: 0, delCDC: 0, delClient: 0, invoiced: 0 }, items: [] };
-        }
-        Object.keys(groupedData[key].total).forEach(col => {
-          groupedData[key].total[col] += entry[col];
-        });
-        groupedData[key].items.push(entry);
-      });
-      
-      let tableBody = $(".table-body");
-      tableBody.empty();
-      
-      Object.keys(groupedData).forEach(key => {
-        let total = groupedData[key].total;
-        let groupRow = `<div class='row group-row'><div class='cell'><span class='expand-icon'>+</span>${key}</div>
-                        <div class='cell'>All</div>
-                        <div class='cell'>${total.planned}</div>
-                        <div class='cell'>${total.received}</div>
-                        <div class='cell'>${total.inHand}</div>
-                        <div class='cell'>${total.delCDC}</div>
-                        <div class='cell'>${total.delClient}</div>
-                        <div class='cell'>${total.invoiced}</div></div>`;
-        tableBody.append(groupRow);
-        
-        groupedData[key].items.forEach(entry => {
-          let detailRow = `<div class='row detail-row hidden'><div class='cell'></div>
-                           <div class='cell'>${groupBy === "milestone" ? entry.Market : entry.milestone}</div>
-                           <div class='cell'>${entry.planned}</div>
-                           <div class='cell'>${entry.received}</div>
-                           <div class='cell'>${entry.inHand}</div>
-                           <div class='cell'>${entry.delCDC}</div>
-                           <div class='cell'>${entry.delClient}</div>
-                           <div class='cell'>${entry.invoiced}</div></div>`;
-          tableBody.append(detailRow);
-        });
-      });
+<script>
+    // Toggle dropdown visibility
+    function toggleDropdown() {
+        const options = document.getElementById('dropdownOptions');
+        options.style.display = options.style.display === 'block' ? 'none' : 'block';
     }
 
-    $(document).ready(function () {
-      renderTable("milestone");
-      $("input[name='view-toggle']").change(function () {
-        let selected = $("input[name='view-toggle']:checked").val();
-        $(".first-col").text(selected.charAt(0).toUpperCase() + selected.slice(1));
-        $(".second-col").text(selected === "milestone" ? "Market" : "Milestone");
-        renderTable(selected);
-      });
-      $(document).on("click", ".expand-icon", function () {
-        $(this).text($(this).text() === "+" ? "-" : "+");
-        $(this).closest(".row").nextUntil(".group-row").toggleClass("hidden");
-      });
-    });
-  </script>
+    // Filter options based on search input
+    function filterOptions() {
+        const searchInput = document.getElementById('dropdownInput').value.toLowerCase();
+        const options = document.getElementsByClassName('dropdown-option');
+        for (let i = 0; i < options.length; i++) {
+            const label = options[i].getElementsByTagName('label')[0];
+            if (label) {
+                const text = label.textContent || label.innerText;
+                options[i].style.display = text.toLowerCase().indexOf(searchInput) > -1 ? 'block' : 'none';
+            }
+        }
+    }
+
+    // Update the selected items
+    function updateSelectedItems() {
+        const selectedItemsDiv = document.getElementById('selectedItems');
+        const selectedItems = [];
+        const options = document.querySelectorAll('.dropdown-option input[type="checkbox"]:checked');
+        
+        options.forEach(option => {
+            selectedItems.push(option.value);
+        });
+
+        selectedItemsDiv.innerHTML = selectedItems.length ? selectedItems.map(item => `<div class="selected-item">${item}</div>`).join('') : '<span>Select items</span>';
+    }
+
+    // Select or deselect all items
+    function toggleSelectAll() {
+        const selectAllCheckbox = document.getElementById('selectAll');
+        const options = document.querySelectorAll('.dropdown-option input[type="checkbox"]');
+        options.forEach(option => {
+            option.checked = selectAllCheckbox.checked;
+        });
+        updateSelectedItems();
+    }
+
+    // Clear selected items
+    function clearSelection() {
+        const options = document.querySelectorAll('.dropdown-option input[type="checkbox"]');
+        options.forEach(option => {
+            option.checked = false;
+        });
+        updateSelectedItems();
+    }
+</script>
+
 </body>
 </html>
