@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://www.gstatic.com/charts/loader.js"></script>
+  <style>
+    /* General Styles */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #ffffff; /* White background */
+      margin: 0;
+      padding: 0;
+      width: 460px; /* Adjusted width based on container */
+    }
+
+    /* Chart Container with Gradient Background */
+    #chart_container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start; /* Align content to the left */
+      margin-top: 5px;
+      padding: 15px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #e3f2fd, #bbdefb); /* Light blue gradient */
+      box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2); /* Soft shadow */
+      width: 460px;
+      margin-left: 10px; /* Align to left */
+    }
+
+    /* Chart Box */
+    #chart_div {
+      width: 460px;
+      height: 280px;
+      background: transparent;
+    }
+
+    /* Chart Title Styling */
+    .chart-title {
+      font-family: "Aptos Bold", Arial, sans-serif;
+      font-size: 20px;
+      font-weight: bold;
+      text-align: center; /* Centering title */
+      width: 100%; /* Ensures full width for proper centering */
+      margin-bottom: 10px;
+      text-transform: uppercase; /* Converts text to ALL CAPS */
+      color: #006064; /* Lighter shade of teal */
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="chart_container">
+    <div class="chart-title">INVOICE PAYMENT STATUS</div> <!-- Centered Title -->
+    <div id="chart_div"></div>
+  </div>
+
+  <script>
+    google.charts.load('current', { packages: ['corechart', 'bar'] });
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+      var data = google.visualization.arrayToDataTable([
+        ['Adherence', 'No. of Jobs', { role: 'style' }, { role: 'annotation' }],
+        ['1-3 Days', 4, '#4CAF50', ' 4 '],      // Green
+        ['4-8 Days', 2, '#2196F3', ' 2 '],       // Blue
+        ['9-15 Days', 3, '#FF9800', ' 3 '],       // Orange
+        ['> 15 Days', 5, '#F44336', ' 5 ']     // Grey (for 0 value)
+      ]);
+
+      var options = {
+        width: 460,
+        height: 280,
+        chartArea: { width: '75%', height: '70%' },
+        legend: { position: 'none' },
+        hAxis: { 
+          textStyle: { fontSize: 12 },
+          titleTextStyle: { fontSize: 14, bold: true }
+        },
+        vAxis: { 
+          textStyle: { fontSize: 12 }, 
+          title: 'No. of Jobs', 
+          titleTextStyle: { fontSize: 14, bold: true },
+          gridlines: { color: '#ddd', count: 10 },
+          viewWindow: { min: 0, max: 6 } // Adjusted for spacing
+        },
+        annotations: {
+          alwaysOutside: true, // Ensures text stays outside the bars
+          textStyle: {
+            fontSize: 14,
+            bold: true,
+            color: '#000'
+          }
+        },
+        animation: {
+          startup: true,
+          duration: 1000,
+          easing: 'out'
+        },
+        bars: 'vertical'
+      };
+
+      var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+      chart.draw(data, options);
+    }
+  </script>
+
+</body>
+
+</html>
