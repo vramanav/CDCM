@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://www.gstatic.com/charts/loader.js"></script>
+ <style>
+    /* Chart Wrapper */
+    .chart-wrapper {
+      display: flex;
+      flex-direction: column;
+      width: 480px;
+      padding: 10px;
+      background-color: #fff; /* Extracted from .card */
+      border: 1px solid rgba(26, 54, 126, 0.125);
+      border-radius: 0.25rem;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+      font-family: 'Aptos Bold', Arial, sans-serif;
+    }
+
+    /* Chart Title */
+    .chart-title {
+      font-size: 14px;
+      text-align: center;
+      background: ;
+      padding: 10px;
+      border-top-left-radius: 0.25rem;
+      border-top-right-radius: 0.25rem;
+      font-weight: bold;
+    }
+
+    /* Chart Content */
+    .chart-content {
+      padding: 5px;
+      display: flex;
+      justify-content: center;
+    }
+
+    /* Chart Styling */
+    #chart_div {
+      width: 460px;
+      height: 200px;
+    }
+  </style>
+</head>
+
+<div class="chart-wrapper">
+  <div class="chart-title">JOB STATUS</div>
+  <div class="chart-content">
+    <div id="chart_div"></div>
+  </div>
+</div>
+
+<script>
+  google.charts.load('current', { packages: ['corechart', 'bar'] });
+  google.charts.setOnLoadCallback(drawChart);
+
+  function drawChart() {
+    var data = google.visualization.arrayToDataTable([
+      ['Job Status', 'No. of Jobs', { role: 'style' }, { role: 'annotation' }],
+      ['Received', 90, '#2196F3', ' 90 '],
+      ['Delivered', 40, '#4CAF50', ' 40 '],
+      ['Invoiced', 35, '#FF9800', ' 35 '],
+      ['Not Delivered', 50, '#F44336', ' 50 ']
+    ]);
+
+    var options = {
+      width: 460,
+      height: 200,
+      chartArea: { width: '75%', height: '70%' },
+      legend: { position: 'none' },
+      hAxis: { 
+        textStyle: { fontSize: 12 },
+        titleTextStyle: { fontSize: 14, bold: true }
+      },
+      vAxis: { 
+        textStyle: { fontSize: 12 }, 
+        title: 'No. of Jobs', 
+        titleTextStyle: { fontSize: 14, bold: true },
+        gridlines: { color: '#ddd', count: 10 },
+        viewWindow: { min: 0, max: 110 }
+      },
+      annotations: {
+        alwaysOutside: true,
+        textStyle: {
+          fontSize: 14,
+          bold: true,
+          color: '#000'
+        }
+      },
+      animation: {
+        startup: true,
+        duration: 1000,
+        easing: 'out'
+      },
+      bars: 'vertical'
+    };
+
+    var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+    chart.draw(data, options);
+  }
+</script>
+
+</html>
